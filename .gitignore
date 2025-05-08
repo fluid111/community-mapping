@@ -1,0 +1,11 @@
+.venv
+.env
+*.env
+db.sqlite3
+/env
+*.pyc
+__pycache__
+.vscode
+/static/
+/media/
+/testdb/
