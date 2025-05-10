@@ -15,11 +15,13 @@
     menu.classList.toggle('hidden');
   }
 </script>
-{% comment %} <link rel="stylesheet" href="{% static 'mapping/style.css' %}"> {% endcomment %}
+<link rel="stylesheet" href="{% static 'mapping/style.css' %}">
   {% tailwind_css %}
 </head>
-<body class ="h-screen flex">
-      <nav class="w-72 bg-gray-800 flex flex-col">
+<body>
+  {% comment %} <body > {% endcomment %}
+  {% comment %} <nav class="bg-gray-800"> {% endcomment %}
+  <nav class="bg-gray-800 h-16">
         <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div class="relative flex h-16 items-center justify-between">
         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -53,10 +55,8 @@
             </div>
             <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
-              <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Projects</a>
-              <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a>
-                <div class="relative inline-block text-left">
-                  <button onclick="toggleDropdown()" class="inline-flex justify-center w-full rounded-md bg-gray-700 px-4 py-2 text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-white">
+              <div class="relative inline-block text-left">
+                <button onclick="toggleDropdown()" class="inline-flex justify-center w-full rounded-md bg-gray-700 px-4 py-2 text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-white">
                     Options
                     <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -69,6 +69,8 @@
                       <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Delete</a></li>
                     </ul>
                 </div>
+                <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Projects</a>
+                <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a>
             </div>
         </div>
     </div>
@@ -123,26 +125,27 @@
       </div>
     </div>
 </nav>
-  <main class="flex-1">
-  <div id="map" class="h-full w-full">
-  {% comment %} <div id="map" class="h-full w-full" style="height:600px; width:600px;"> {% endcomment %}
+  {% comment %} <main class="flex-1"> {% endcomment %}
+  <div id="map" style="height:650px; width:full;">
+  {% comment %} <div id="map" class="h-full w-full" style="height:650px; width:full;"> {% endcomment %}
   </div>
-    </main>
+    {% comment %} </main> {% endcomment %}
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
    crossorigin=""></script>
   <script>
-  {% comment %} window.onload = function () { {% endcomment %}
-    var map = L.map('map').setView([51.505, -0.09], 13);
+   {% comment %} document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(function () { {% endcomment %}
+    var map = L.map('map').setView([27.73613, 85.30592], 13);
     
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
-{% comment %}     
     L.marker([51.5, -0.09]).addTo(map)
     .bindPopup('A pretty CSS popup.<br> Easily customizable.')
-    .openPopup(); {% endcomment %}
-  {% comment %} } {% endcomment %}
+    .openPopup
+        {% comment %} }, 0);
+}); {% endcomment %}
   </script>
 </body>
 </html>
