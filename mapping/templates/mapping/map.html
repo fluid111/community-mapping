@@ -128,6 +128,7 @@
   {% comment %} <main class="flex-1"> {% endcomment %}
   <div id="map" style="height:650px; width:full;">
   {% comment %} <div id="map" class="h-full w-full" style="height:650px; width:full;"> {% endcomment %}
+   {{park|json_script:"park_json"}
   </div>
     {% comment %} </main> {% endcomment %}
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"

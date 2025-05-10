@@ -12,8 +12,10 @@ class ParkListCreateAPIView(generics.ListCreateAPIView):
 
 @api_view(['GET'])
 def park_locations(request):
-    parks = Park.objects.values('id', 'name', 'latitude', 'longitude')
-    return Response(parks)
+    park=Park.objects.value('latitdue','longitude')[:100]
+    print(park)
+    context={'park':park}
+    return render(request, 'map.html', context)
 
 def map(request):
     return render(request, 'mapping/map.html')
