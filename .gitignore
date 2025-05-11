@@ -1,5 +1,5 @@
 
-__pycache__
+__pycache__/
 *.py[cod]
 *$py.class
 *.pyo
@@ -24,7 +24,7 @@ test.md
 
 
 
-.vscode
+.vscode/
 
 *.log
 logs/
@@ -38,3 +38,5 @@ logs/
 
 package-lock.json
 package.config.js
+
+**/extra.html

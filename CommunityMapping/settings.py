@@ -61,7 +61,7 @@ TAILWIND_APP_NAME = 'theme'
 
 NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
 
-AUTH_USER_MODEL = "mapping.CustomUser" 
+AUTH_USER_MODEL = 'mapping.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
