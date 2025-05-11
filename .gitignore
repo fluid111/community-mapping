@@ -36,6 +36,7 @@ logs/
 
 /testdb/
 
+node_modules/
 package-lock.json
 package.config.js
 
