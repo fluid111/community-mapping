@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="{% static 'mapping/style.css' %}">
   {% tailwind_css %}
 </head>
-<body>
+<body >
    <nav class="bg-gray-800">
         <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div class="relative flex h-16 items-center justify-between">
@@ -52,10 +52,11 @@
               
             </div>
             <div class="hidden sm:ml-6 sm:block">
-            <div class="flex space-x-4">
+            <div class="flex space-x-4 relative inline-block text-left">
               <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Projects</a>
               <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a>
-                <div class="relative inline-block text-left">
+                <div class="relative z-50 inline-block text-left">
+                {% comment %} <div class="relative z-50 inline-block text-left"> {% endcomment %}
                   <button onclick="toggleDropdown()" class="inline-flex justify-center w-full rounded-md bg-gray-700 px-4 py-2 text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-white">
                     Options
                     <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -91,16 +92,6 @@
                 </button>
             </div>
             
-            <!--
-                Dropdown menu, show/hide based on menu state.
-  
-                Entering: "transition ease-out duration-100"
-                From: "transform opacity-0 scale-95"
-                To: "transform opacity-100 scale-100"
-                Leaving: "transition ease-in duration-75"
-                From: "transform opacity-100 scale-100"
-                To: "transform opacity-0 scale-95"
-            -->
             <div class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
               <!-- Active: "bg-gray-100 outline-hidden", Not Active: "" -->
               <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
@@ -123,11 +114,9 @@
       </div>
     </div>
 </nav>
-  {% comment %} <main class="flex-1"> {% endcomment %}
-  <div id="map" style="height:650px; width:full;">
-  {% comment %} <div id="map" class="h-full w-full" style="height:650px; width:full;"> {% endcomment %}
+  {% comment %} <div id="map" class = "z-10 h-screen w-full"> {% endcomment %}
+   <div id="map" style="height:calc(100vh - 64px); width:100%; position: relative; z-index: 1;"></div>
   </div>
-    {% comment %} </main> {% endcomment %}
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
    crossorigin=""></script>
@@ -139,9 +128,9 @@
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
-    L.marker([51.5, -0.09]).addTo(map)
+    {% comment %} L.marker([51.5, -0.09]).addTo(map)
     .bindPopup('A pretty CSS popup.<br> Easily customizable.')
-    .openPopup
+    .openPopup(); {% endcomment %}
         {% comment %} }, 0);
 }); {% endcomment %}
   </script>
