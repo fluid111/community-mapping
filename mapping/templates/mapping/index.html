@@ -50,9 +50,9 @@
                   </svg>
                 </button>
                 <ul id="dropdownMenu" class="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 hidden">
-                  <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Add</a></li>
-                  <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a></li>
-                  <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Delete</a></li>
+                  <li><a href="#" onclick="enableAddMarkerMode(event)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Add</a></li>
+                  <li><a href="#" onclick="enableEditMarkerMode(event)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a></li>
+                  <li><a href="#" onclick="enableDeleteMarkerMode(event)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Delete</a></li>
                 </ul>
               </div>
               <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Help</a>
@@ -147,6 +147,59 @@
             console.error("Error parsing point_json:", e);
         }
     }
+
+
+    let addMarkerMode = false;
+
+    function enableAddMarkerMode(event) {
+        event.preventDefault();
+        addMarkerMode = true;
+        console.log("Add marker mode enabled. Click on the map to place a marker.");
+        // Optionally, show a message to the user
+        alert("Click on the map to place a marker.");
+    }
+
+    // Handle map click to add a marker
+    map.on('click', function(e) {
+        if (addMarkerMode) {
+            const { lat, lng } = e.latlng;
+            console.log(`Marker placed at: Lat: ${lat}, Lon: ${lng}`);
+
+            // Add the marker to the map
+            L.marker([lat, lng])
+                .addTo(map)
+                .bindPopup(`Lat: ${lat.toFixed(5)}, Lon: ${lng.toFixed(5)}`)
+                .openPopup();
+
+            fetch('/api/add-park/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    latitude: lat,
+                    longitude: lng
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error("Error saving marker:", data.error);
+                    alert("Failed to save marker: " + data.error);
+                } else {
+                    console.log("Marker saved successfully:", data);
+                    alert("Marker saved successfully!");
+                }
+            })
+            .catch(error => {
+                console.error("Error saving marker:", error);
+                alert("Failed to save marker: Network error");
+            });
+            // Disable add marker mode after placing the marker
+            addMarkerMode = false;
+            console.log("Add marker mode disabled.");
+        }
+    });
   </script>
 </body>
 </html>
