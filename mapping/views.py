@@ -3,6 +3,8 @@ from rest_framework import generics
 from .models import Park
 from .serializers import ParkSerializer
 from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework import status
 
 from rest_framework.decorators import api_view
 
@@ -76,13 +78,14 @@ def add_park(request):
 
 @api_view(['DELETE'])
 def delete_park(request, park_id):
-    try:
-        park = Park.objects.get(id=park_id)
-        park.delete()
-        return Response({'message': 'Park deleted successfully'}, status=status.HTTP_200_OK)
-    except Park.DoesNotExist:
-        return Response({'error': 'Park not found'}, status=status.HTTP_404_NOT_FOUND)
-
+    if request.method == 'DELETE':
+        try:
+            park = Park.objects.get(id=park_id)
+            park.delete()
+            return Response({'message': 'Park deleted successfully'}, status=status.HTTP_200_OK)
+        except Park.DoesNotExist:
+            return Response({'error': 'Park not found'}, status=status.HTTP_404_NOT_FOUND)
+    return JsonResponse({'error': 'Invalid method'}, status=400)
 
 # def remove_marker(request):
 #     if request.method =="POST":
