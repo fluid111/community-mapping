@@ -111,10 +111,14 @@
       attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
     
+    var markersLayer = L.layerGroup().addTo(map);
+
     {% comment %} let parks = JSON.parse(document.getElementById('point_json').textContent);
     console.log("Parsed parks:", parks);
     parks.forEach(park =>{
-      L.marker([park.latitude, park.longitude)].addTo(map)
+      L.marker([park.latitude, park.longitude]).bindPopup(function(layer){
+        return layer.features.properties.name
+      }).addTo(map)
     }); {% endcomment %}
     const pointJsonElement = document.getElementById('point_json');
     if (!pointJsonElement) {
@@ -133,48 +137,55 @@
                         console.error(`Invalid coordinates at index ${index}:`, park);
                         return;
                     }
-                    if (park.latitude < -90 || park.latitude > 90 || park.longitude < -180 || park.longitude > 180) {
-                        console.error(`Out-of-range coordinates at index ${index}:`, park);
-                        return;
-                    }
-                    console.log(`Adding marker for park at index ${index}:`, park);
-                    L.marker([park.latitude, park.longitude])
-                        .addTo(map)
-                        .bindPopup(`Lat: ${park.latitude}, Lon: ${park.longitude}`);
-                });
-            }
-        } catch (e) {
-            console.error("Error parsing point_json:", e);
-        }
-    }
 
+                    {% comment %} error in this fix it  {% endcomment %}
+                    {% comment %} const marker = L.marker([park.latitude, park.longitude]).addPopup(park.latitude, park.longitude, park.id).addTo(map);
+                    marker.parkId = park.id; {% endcomment %}
+
+                    console.log(`Adding marker for park at index ${index}:`, park);
+                    const marker = L.marker([park.latitude, park.longitude])
+                        .addTo(map).bindPopup(`Park ID: ${park.id}<br>Lat: ${park.latitude}<br>Lng: ${park.longitude}`);
+
+                        marker.parkId = park.id;
+
+                    });
+                  }
+                }
+                catch (e) {
+                    console.error("Error parsing point_json:", e);
+                }
+              }
 
     let addMarkerMode = false;
+    let deleteMarkerMode = false;
 
     function enableAddMarkerMode(event) {
         event.preventDefault();
         addMarkerMode = true;
         console.log("Add marker mode enabled. Click on the map to place a marker.");
-        // Optionally, show a message to the user
-        alert("Click on the map to place a marker.");
-    }
-
+        {% comment %} alert("Click on the map to place a marker."); {% endcomment %}
+      }
+      function enableDeleteMarkerMode(event){
+        event.preventDefault();
+        deleteMarkerMode=true;
+        console.log("Delete marker mode enabled")
+      }
+    const markers = [];
     // Handle map click to add a marker
     map.on('click', function(e) {
         if (addMarkerMode) {
             const { lat, lng } = e.latlng;
-            console.log(`Marker placed at: Lat: ${lat}, Lon: ${lng}`);
+            console.log(`Adding marker placed at: Lat: ${lat}, Lon: ${lng}`);
 
-            // Add the marker to the map
-            L.marker([lat, lng])
+            const marker = L.marker([lat, lng])
                 .addTo(map)
-                .bindPopup(`Lat: ${lat.toFixed(5)}, Lon: ${lng.toFixed(5)}`)
-                .openPopup();
+                    console.log(`Added marker at :${lat}, ${lng}`);
 
             fetch('/api/add-park/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken(),
                 },
                 body: JSON.stringify({
                     latitude: lat,
@@ -188,7 +199,6 @@
                     alert("Failed to save marker: " + data.error);
                 } else {
                     console.log("Marker saved successfully:", data);
-                    alert("Marker saved successfully!");
                 }
             })
             .catch(error => {
@@ -199,7 +209,94 @@
             addMarkerMode = false;
             console.log("Add marker mode disabled.");
         }
+        {% comment %} else if (deleteMarkerMode) {
+          const { lat, lng } = e.latlng;
+          L.marker([lat, lng]).on('click', e=>e.target.remove())
+    } {% endcomment %}
     });
+
+    {% comment %} map.on('click', function (e) {
+  if (addMarkerMode) {
+    const { lat, lng } = e.latlng;
+    console.log(`Adding marker at: Lat: ${lat}, Lon: ${lng}`);
+
+    const marker = L.marker([lat, lng]).addTo(map);
+
+    marker.on('click', function (e) {
+      if (deleteMarkerMode) {
+        map.removeLayer(marker);
+        console.log("Marker deleted from map");
+
+        // Optional: Send delete request to backend if marker has ID
+        // fetch(`/api/delete-park/${marker.parkId}`, { method: 'DELETE', headers: {...} })
+      }
+    });
+
+    markers.push(marker); // Keep track
+
+    // Save to backend
+    fetch('/api/add-park/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCsrfToken(),
+      },
+      body: JSON.stringify({
+        latitude: lat,
+        longitude: lng
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          console.error("Error saving marker:", data.error);
+          alert("Failed to save marker: " + data.error);
+        } else {
+          console.log("Marker saved successfully:", data);
+          alert("Marker saved successfully!");
+          // You can optionally set marker.parkId = data.id;
+        }
+      })
+      .catch(error => {
+        console.error("Error saving marker:", error);
+        alert("Failed to save marker: Network error");
+      });
+
+    addMarkerMode = false;
+  }
+}); {% endcomment %}
+
+    function getCsrfToken() {
+    const name = 'csrftoken';
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      const [key, value] = cookie.trim().split('=');
+      if (key === name) {
+        return value;
+      }
+    }
+    return null;
+  };
+
+  {% comment %} delete map lat,long from database {% endcomment %}
+{% comment %} if (closestMarker) {
+  const parkId = closestMarker.parkId;
+  fetch(`/api/delete-park/${parkId}/`, {
+    method: 'DELETE',
+    headers: {
+      'X-CSRFToken': getCsrfToken()
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.error) {
+      alert("Failed to delete park from server: " + data.error);
+    } else {
+      markersLayer.removeLayer(closestMarker);
+      alert("Marker and park deleted successfully!");
+    }
+  });
+} {% endcomment %}
   </script>
 </body>
 </html>
