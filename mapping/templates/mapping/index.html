@@ -143,7 +143,7 @@
                     marker.parkId = park.id; {% endcomment %}
 
                     console.log(`Adding marker for park at index ${index}:`, park);
-                    const marker = L.marker([park.latitude, park.longitude])
+                    const marker = L.marker([park.latitude, park.longitude,]) 
                         .addTo(map).bindPopup(`Park ID: ${park.id}<br>Lat: ${park.latitude}<br>Lng: ${park.longitude}`);
 
                         marker.parkId = park.id;
@@ -181,6 +181,7 @@
 
     let addMarkerMode = false;
     let deleteMarkerMode = false;
+    let editMarkerMode = false;
 
     function enableAddMarkerMode(event) {
         event.preventDefault();
@@ -193,8 +194,12 @@
         deleteMarkerMode=true;
         console.log("Delete marker mode enabled")
       }
+      function enableEditMarkerMode(event){
+        event.preventDefault();
+        editMarkerMode=true;
+        console.log("edit marker mode enabled")
+      }
     const markers = [];
-    // Handle map click to add a marker
     map.on('click', function(e) {
         if (addMarkerMode) {
             const { lat, lng } = e.latlng;
@@ -232,29 +237,10 @@
             addMarkerMode = false;
             console.log("Add marker mode disabled.");
         }
-        {% comment %} else if (deleteMarkerMode) {
-        if (deleteMarkerMode) {
-      if (console.log("Do you want to delete this park?")) {
-        fetch(`/api/delete-park/${marker.parkId}/`, {
-          method: 'DELETE',
-          headers: {
-            'X-CSRFToken': getCsrfToken()
-          }
-        })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error("Failed to delete from server");
-          }
-          map.removeLayer(marker);
-          alert("Marker deleted successfully!");
-        })
-        .catch(error => {
-          console.error("Error deleting marker:", error);
-          alert("Failed to delete marker.");
-        });
-      }
-    } {% endcomment %}
-    {% comment %} } {% endcomment %}
+
+        if(editMarkerMode){
+          console.log("now you can edit markers")
+        }
     });
 
     {% comment %} map.on('click', function (e) {
