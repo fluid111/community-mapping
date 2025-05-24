@@ -8,5 +8,6 @@ urlpatterns = [
     path('navbar/', views.location, name='navbar'),
     path('add-park/', views.add_park, name='add-park'),
     path('delete-park/<int:park_id>/', views.delete_park, name='delete-park'),
+    path('edit-park/<int:park_id>/', views.edit_park, name='edit-park'),
 
 ]

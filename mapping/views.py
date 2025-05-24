@@ -26,11 +26,7 @@ def park_locations(request):
     context={'park':park}
     return render(request, 'mapping/index.html', context)
 
-# def location(request):
-#     point = list(Park.objects.values('latitude','longitude')[:100])
-#     print(point[:2])
-#     context = {'point':point}
-#     return render (request, 'mapping/index.html', context)
+
 def location(request):
     # parks = Park.objects.values('id','latitude', 'longitude')[:100]
     parks = Park.objects.values('id','latitude', 'longitude')
@@ -55,18 +51,6 @@ def add_park(request):
             longitude = data.get('longitude')
             # park = Marker.objects.create(latitude=lat, longitude=lng)
 
-            # if latitude is None or longitude is None:
-            #     return JsonResponse({'error': 'Latitude and longitude are required'}, status=400)
-
-            # try:
-            #     latitude = float(latitude)
-            #     longitude = float(longitude)
-            # except ValueError:
-            #     return Response({'error': 'Latitude and longitude must be valid numbers'}, status=status.HTTP_400_BAD_REQUEST)
-
-            # if not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
-            #     return JsonResponse({'error': 'Invalid coordinates'}, status=400)
-
             park = Park.objects.create(
                 name=f"Park at {latitude}, {longitude}",
                 latitude=latitude,
@@ -88,11 +72,29 @@ def delete_park(request, park_id):
             return Response({'error': 'Park not found'}, status=status.HTTP_404_NOT_FOUND)
     return JsonResponse({'error': 'Invalid method'}, status=400)
 
-# def remove_marker(request):
-#     if request.method =="POST":
-#     # try:
-#         parks = Park.objects.values('latitude', 'longitude')
+# @csrf_exempt
+@api_view(['PUT'])
+def edit_park(request, park_id):
+    if request.method == 'PUT':
+        try:
+            park = Park.objects.get(id=park_id)
+
+            newlatitude = request.data.get('latitude')
+            newlongitude = request.data.get('longitude')
+
+            if latitude is None or longitude is None:
+             return Response({'error': 'Missing coordinates'}, status=status.HTTP_400_BAD_REQUEST)
+
+            park.latitude = newlatitude
+            park.longitude = newlongitude
+            park.save()
+
+            return Response({'park id received'}, status=status.HTTP_200_OK)
+        
+        except Park.DoesNotExist:
+         return Response({'error': 'Park not found'}, status=status.HTTP_404_NOT_FOUND)
+        except:
+            print("An exception occurred")
+
 def map(request):
     return render(request, 'mapping/map.html')
-# def navbar(request):
-#     return render(request, 'mapping/index.html')

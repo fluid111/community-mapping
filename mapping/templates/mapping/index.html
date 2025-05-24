@@ -131,23 +131,19 @@
 
             if (!Array.isArray(parks) || parks.length === 0) {
                 console.warn("No valid park data to display markers");
-            } else {
+            }else {
                 parks.forEach((park, index) => {
                     if (park.latitude == null || park.longitude == null || isNaN(park.latitude) || isNaN(park.longitude)) {
                         console.error(`Invalid coordinates at index ${index}:`, park);
                         return;
                     }
-
-                    {% comment %} error in this fix it  {% endcomment %}
-                    {% comment %} const marker = L.marker([park.latitude, park.longitude]).addPopup(park.latitude, park.longitude, park.id).addTo(map);
-                    marker.parkId = park.id; {% endcomment %}
-
                     console.log(`Adding marker for park at index ${index}:`, park);
-                    const marker = L.marker([park.latitude, park.longitude,]) 
+                    var marker = L.marker([park.latitude, park.longitude]) 
                         .addTo(map).bindPopup(`Park ID: ${park.id}<br>Lat: ${park.latitude}<br>Lng: ${park.longitude}`);
 
+
                         marker.parkId = park.id;
-                        marker.on('click', function () {
+                        marker.on('click', function (e) {
                         if (deleteMarkerMode) {
                           if (confirm("Do you want to delete this park?")) {
                             fetch(`/api/delete-park/${marker.parkId}/`, {
@@ -169,21 +165,57 @@
                             });
                           }
                         }
-                      });
 
+                        else if(editMarkerMode){
+                          const clickedMarker = this;
+                          clickedMarker.dragging.enable();
+
+                          clickedMarker.on('dragend', function (e) {
+                          if(confirm("Do you want to edit marker")) {
+                            const { lat, lng } = clickedMarker.getLatLng();
+                            
+                            console.log(`${lat} and ${lng}`)
+                            console.log(`${park.id}`);
+                              fetch(`/api/edit-park/${park.id}/`, {
+                              method: 'PUT',
+                              headers: {
+                                'X-CSRFToken': getCsrfToken()
+                              },
+                              body: JSON.stringify({
+                                latitude: lat,
+                                longitude: lng
+                              })
+                            })
+                            .then(response => {
+                              if (!response.ok) {
+                                throw new Error("Failed to edit from server");
+                              }
+                            }).catch(error => {
+                                console.error("Error updating marker:", error);
+                                alert("Failed to update marker.");
+                              })
+                            }
+                          else{
+                              // If user cancels, reset position or just disable dragging
+                              clickedMarker.dragging.disable();
+                            }
+                          });
+                          };
+                        })
                     });
                   }
-                }
-                catch (e) {
+        }catch (e) {
                     console.error("Error parsing point_json:", e);
                 }
-              }
+              };
+              
+          
 
     let addMarkerMode = false;
     let deleteMarkerMode = false;
     let editMarkerMode = false;
 
-    function enableAddMarkerMode(event) {
+      function enableAddMarkerMode(event) {
         event.preventDefault();
         addMarkerMode = true;
         console.log("Add marker mode enabled. Click on the map to place a marker.");
@@ -199,7 +231,9 @@
         editMarkerMode=true;
         console.log("edit marker mode enabled")
       }
+
     const markers = [];
+
     map.on('click', function(e) {
         if (addMarkerMode) {
             const { lat, lng } = e.latlng;
@@ -243,57 +277,6 @@
         }
     });
 
-    {% comment %} map.on('click', function (e) {
-  if (addMarkerMode) {
-    const { lat, lng } = e.latlng;
-    console.log(`Adding marker at: Lat: ${lat}, Lon: ${lng}`);
-
-    const marker = L.marker([lat, lng]).addTo(map);
-
-    marker.on('click', function (e) {
-      if (deleteMarkerMode) {
-        map.removeLayer(marker);
-        console.log("Marker deleted from map");
-
-        // Optional: Send delete request to backend if marker has ID
-        // fetch(`/api/delete-park/${marker.parkId}`, { method: 'DELETE', headers: {...} })
-      }
-    });
-
-    markers.push(marker); // Keep track
-
-    // Save to backend
-    fetch('/api/add-park/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': getCsrfToken(),
-      },
-      body: JSON.stringify({
-        latitude: lat,
-        longitude: lng
-      })
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.error) {
-          console.error("Error saving marker:", data.error);
-          alert("Failed to save marker: " + data.error);
-        } else {
-          console.log("Marker saved successfully:", data);
-          alert("Marker saved successfully!");
-          // You can optionally set marker.parkId = data.id;
-        }
-      })
-      .catch(error => {
-        console.error("Error saving marker:", error);
-        alert("Failed to save marker: Network error");
-      });
-
-    addMarkerMode = false;
-  }
-}); {% endcomment %}
-
     function getCsrfToken() {
     const name = 'csrftoken';
     const cookies = document.cookie.split(';');
@@ -306,25 +289,7 @@
     return null;
   };
 
-  {% comment %} delete map lat,long from database {% endcomment %}
-{% comment %} if (closestMarker) {
-  const parkId = closestMarker.parkId;
-  fetch(`/api/delete-park/${parkId}/`, {
-    method: 'DELETE',
-    headers: {
-      'X-CSRFToken': getCsrfToken()
-    }
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.error) {
-      alert("Failed to delete park from server: " + data.error);
-    } else {
-      markersLayer.removeLayer(closestMarker);
-      alert("Marker and park deleted successfully!");
-    }
-  });
-} {% endcomment %}
+ 
   </script>
 </body>
 </html>
