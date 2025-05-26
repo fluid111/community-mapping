@@ -82,7 +82,7 @@ def edit_park(request, park_id):
             newlatitude = request.data.get('latitude')
             newlongitude = request.data.get('longitude')
 
-            if latitude is None or longitude is None:
+            if newlatitude is None or newlongitude is None:
              return Response({'error': 'Missing coordinates'}, status=status.HTTP_400_BAD_REQUEST)
 
             park.latitude = newlatitude
@@ -93,8 +93,8 @@ def edit_park(request, park_id):
         
         except Park.DoesNotExist:
          return Response({'error': 'Park not found'}, status=status.HTTP_404_NOT_FOUND)
-        except:
-            print("An exception occurred")
-
+        except Exception as e:
+            print(f"An exception occurred: {e}")
+            return Response({'error': 'Internal server error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 def map(request):
     return render(request, 'mapping/map.html')

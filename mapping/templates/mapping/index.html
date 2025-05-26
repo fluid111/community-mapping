@@ -179,7 +179,8 @@
                               fetch(`/api/edit-park/${park.id}/`, {
                               method: 'PUT',
                               headers: {
-                                'X-CSRFToken': getCsrfToken()
+                                'X-CSRFToken': getCsrfToken(),
+                                'Content-Type': 'application/json'
                               },
                               body: JSON.stringify({
                                 latitude: lat,
