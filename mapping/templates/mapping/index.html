@@ -14,6 +14,10 @@
       const menu = document.getElementById('dropdownMenu');
       menu.classList.toggle('hidden');
     }
+    function toggleProfileDropdown() {
+      const menu = document.getElementById('Profiledropdown');
+      menu.classList.toggle('hidden');
+    }
   </script>
   <link rel="stylesheet" href="{% static 'mapping/style.css' %}">
   {% tailwind_css %}
@@ -42,6 +46,7 @@
           </div>
           <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
+              {% comment %} options dropdown {% endcomment %}
               <div class="relative z-50 inline-block text-left">
                 <button onclick="toggleDropdown()" class="inline-flex justify-center w-full rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-white">
                   Options
@@ -63,8 +68,9 @@
         <!-- Move search input to the right side with notification and profile -->
         <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
           <div class="relative">
-            <input type="text" placeholder="Search..." class="rounded-md border-2 border-pink-500 bg-gray-800 text-white px-3 py-1 focus:outline-none focus:ring-2 focus:ring-white">
+            <input type="text" placeholder="Search... testing the search bar" class="rounded-md border-2 border-pink-500 bg-gray-800 text-white px-3 py-1 focus:outline-none focus:ring-2 focus:ring-white">
           </div>
+          {% comment %} notification button {% endcomment %}
           <button type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-none">
             <span class="absolute -inset-1.5"></span>
             <span class="sr-only">View notifications</span>
@@ -75,13 +81,15 @@
           
           <div class="relative ml-3">
             <div>
-              <button type="button" class="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-none" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+              <button type="button" onclick="toggleProfileDropdown()" class="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-none" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                 <span class="absolute -inset-1.5"></span>
                 <span class="sr-only">Open user menu</span>
-                <img class="size-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                {% comment %} <img class="size-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt=""> {% endcomment %}
+                <img class="size-8 rounded-full" src="https://plus.unsplash.com/premium_photo-1738980401922-70995a1b6ade?q=80&w=1934&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
               </button>
             </div>
-            <div class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+            {% comment %} profile dropdwon {% endcomment %}
+            <div id="Profiledropdown" class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none hidden" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
               <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
               <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
               <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
