@@ -18,16 +18,18 @@ class CustomUserAdmin(UserAdmin):
     ]
     list_filter = ("is_staff", "is_active", "is_superuser")
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
+        (None, {'fields': ('email', 'username', 'password')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2'),
+            'fields': ('email', 'username','password1', 'password2'),
         }),
     )
     search_fields = ('email',)
     ordering = ('email',)
+    readonly_fields = ('email',) #disable editing of the email field in admin change form
+
 
 admin.site.register(CustomUser, CustomUserAdmin)

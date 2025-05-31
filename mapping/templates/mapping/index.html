@@ -18,6 +18,10 @@
       const menu = document.getElementById('Profiledropdown');
       menu.classList.toggle('hidden');
     }
+    function toggleLocationDescription(){
+      const locDescrip = document.getElementById("LocDescrip");
+      locDescrip.classLisr.toggle('hidden');
+    }
   </script>
   <link rel="stylesheet" href="{% static 'mapping/style.css' %}">
   {% tailwind_css %}
@@ -110,6 +114,47 @@
   <div id="map" style="height:calc(100vh - 64px); width:100%; position: relative; z-index: 1;">
     {{point|json_script:"point_json"}}
   </div>
+
+{% comment %} Description section {% endcomment %}
+<div class="w-full max-w-md h-screen bg-red-500 shadow-xl border-r p-4 overflow-y-auto fixed top-0 left-0 z-50 hidden">
+  <div class="w-full h-48 bg-gray-200 rounded-lg overflow-hidden">
+    <img src="https://via.placeholder.com/400x200" alt="Location Image" class="w-full h-full object-cover">
+  </div>
+
+  <!-- Title -->
+  <h2 class="text-2xl font-semibold mt-4 text-gray-800">Location Name</h2>
+
+  <!-- Short Description -->
+  <p class="text-gray-600 mt-2">This is a short description of the location. It can include historical context, notable features, or any interesting facts about the place.</p>
+
+  <!-- Metadata -->
+  <div class="mt-4 space-y-2">
+    <div class="flex items-start">
+      <span class="text-gray-500 w-24">Address:</span>
+      <span class="text-gray-700">123 Main St, Kathmandu</span>
+    </div>
+    <div class="flex items-start">
+      <span class="text-gray-500 w-24">Hours:</span>
+      <span class="text-gray-700">9:00 AM - 5:00 PM</span>
+    </div>
+    <div class="flex items-start">
+      <span class="text-gray-500 w-24">Contact:</span>
+      <span class="text-gray-700">+977 1 2345678</span>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="mt-6 flex space-x-3">
+    <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">Get Directions</button>
+    <button class="px-4 py-2 bg-gray-100 text-gray-800 text-sm rounded hover:bg-gray-200 transition">Visit Website</button>
+  </div>
+
+  <!-- Optional: Tags or Categories -->
+  <div class="mt-4 flex flex-wrap gap-2">
+    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">Historic</span>
+    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">Tourist Spot</span>
+  </div>
+</div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""></script>
@@ -121,13 +166,6 @@
     
     var markersLayer = L.layerGroup().addTo(map);
 
-    {% comment %} let parks = JSON.parse(document.getElementById('point_json').textContent);
-    console.log("Parsed parks:", parks);
-    parks.forEach(park =>{
-      L.marker([park.latitude, park.longitude]).bindPopup(function(layer){
-        return layer.features.properties.name
-      }).addTo(map)
-    }); {% endcomment %}
     const pointJsonElement = document.getElementById('point_json');
     if (!pointJsonElement) {
         console.error("point_json element not found");
@@ -147,7 +185,7 @@
                     }
                     console.log(`Adding marker for park at index ${index}:`, park);
                     var marker = L.marker([park.latitude, park.longitude]) 
-                        .addTo(map).bindPopup(`Park ID: ${park.id}<br>Lat: ${park.latitude}<br>Lng: ${park.longitude}`);
+                        .addTo(map).bindPopup(`Name: ${park.name} <br> Park ID: ${park.id}<br>Lat: ${park.latitude}<br>Lng: ${park.longitude}`);
 
 
                         marker.parkId = park.id;

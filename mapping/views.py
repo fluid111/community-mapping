@@ -21,15 +21,13 @@ class ParkListCreateAPIView(generics.ListCreateAPIView):
 @api_view(['GET'])
 def park_locations(request):
     park=Park.objects.values('latitude','longitude')
-    # park=Park.objects.values('latitude','longitude')[:100]
-    # print(park[:2])
     context={'park':park}
     return render(request, 'mapping/index.html', context)
 
 
 def location(request):
     # parks = Park.objects.values('id','latitude', 'longitude')[:100]
-    parks = Park.objects.values('id','latitude', 'longitude')
+    parks = Park.objects.values('name', 'id','latitude', 'longitude')
     point = [
         park for park in parks
         if park['latitude'] is not None and park['longitude'] is not None
