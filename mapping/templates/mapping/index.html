@@ -9,7 +9,7 @@
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin="" />  
-  <script>
+    <script>
     function toggleDropdown() {
       const menu = document.getElementById('dropdownMenu');
       menu.classList.toggle('hidden');
@@ -20,10 +20,12 @@
     }
     function toggleLocationDescription(){
       const locDescrip = document.getElementById("LocDescrip");
-      locDescrip.classLisr.toggle('hidden');
+      locDescrip.classList.toggle('hidden');
     }
   </script>
+  {% load static %}
   <link rel="stylesheet" href="{% static 'mapping/style.css' %}">
+  {% load static tailwind_tags %}
   {% tailwind_css %}
 </head>
 <body>
@@ -72,7 +74,7 @@
         <!-- Move search input to the right side with notification and profile -->
         <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
           <div class="relative">
-            <input type="text" placeholder="Search... testing the search bar" class="rounded-md border-2 border-pink-500 bg-gray-800 text-white px-3 py-1 focus:outline-none focus:ring-2 focus:ring-white">
+            <input type="text" placeholder="Search..." class="rounded-md border-2 border-pink-500 bg-gray-800 text-white px-3 py-1 focus:outline-none focus:ring-2 focus:ring-white">
           </div>
           {% comment %} notification button {% endcomment %}
           <button type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-none">
@@ -106,55 +108,59 @@
     <div class="sm:hidden" id="mobile-menu">
       <div class="space-y-1 px-2 pt-2 pb-3">
         <a href="#" class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white" aria-current="page">Add</a>
-        <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Projects</a>
-        <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a>
+        <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Edit</a>
+        <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Delete</a>
       </div>
     </div>
   </nav>
-  <div id="map" style="height:calc(100vh - 64px); width:100%; position: relative; z-index: 1;">
-    {{point|json_script:"point_json"}}
-  </div>
+
 
 {% comment %} Description section {% endcomment %}
-<div class="w-full max-w-md h-screen bg-red-500 shadow-xl border-r p-4 overflow-y-auto fixed top-0 left-0 z-50 hidden">
-  <div class="w-full h-48 bg-gray-200 rounded-lg overflow-hidden">
-    <img src="https://via.placeholder.com/400x200" alt="Location Image" class="w-full h-full object-cover">
-  </div>
 
-  <!-- Title -->
-  <h2 class="text-2xl font-semibold mt-4 text-gray-800">Location Name</h2>
-
-  <!-- Short Description -->
-  <p class="text-gray-600 mt-2">This is a short description of the location. It can include historical context, notable features, or any interesting facts about the place.</p>
-
-  <!-- Metadata -->
-  <div class="mt-4 space-y-2">
-    <div class="flex items-start">
-      <span class="text-gray-500 w-24">Address:</span>
-      <span class="text-gray-700">123 Main St, Kathmandu</span>
+{% comment %} <div class="h-[calc(100vh-64px)]">  {% endcomment %}
+{% comment %} <div class="relative h-[calc(100vh-64px)]  w-full">  {% endcomment %}
+<div id="LocDescrip" class="absolute top-4 left-4 z-20 w-80 bg-red-500 border-4 border-yellow-400 rounded-lg shadow-lg p-6 max-h-[calc(100vh-120px)] overflow-y-auto hidden ">
+     <button onclick="toggleLocationDescription(false)" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl font-bold">&times;</button>
+    <div class="w-full h-48 mb-4 rounded-lg overflow-hidden bg-gray-200">
+      <img src="" alt="Location Image" class="object-cover" />
     </div>
-    <div class="flex items-start">
-      <span class="text-gray-500 w-24">Hours:</span>
-      <span class="text-gray-700">9:00 AM - 5:00 PM</span>
+    <h2 class="text-2xl font-semibold mt-4 text-gray-800">Location Name</h2>
+    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+      This is a short description of the location. It can include historical context, notable features, or any interesting facts about the place.
+    </p>
+    <div class="mt-4 space-y-2">
+      <div class="flex items-start">
+        <span class="text-gray-500 w-24">Address:</span>
+        <span class="text-gray-700">123 Main St, Kathmandu</span>
+      </div>
+      <div class="flex items-start">
+        <span class="text-gray-500 w-24">Hours:</span>
+        <span class="text-gray-700">9:00 AM - 5:00 PM</span>
+      </div>
+      <div class="flex items-start">
+        <span class="text-gray-500 w-24">Contact:</span>
+        <span class="text-gray-700">+977 1 2345678</span>
+      </div>
     </div>
-    <div class="flex items-start">
-      <span class="text-gray-500 w-24">Contact:</span>
-      <span class="text-gray-700">+977 1 2345678</span>
+    <div class="mt-6 flex space-x-3">
+      <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">
+        Get Directions
+      </button>
+      <button class="px-4 py-2 bg-gray-100 text-gray-800 text-sm rounded hover:bg-gray-200 transition">
+        Visit Website
+      </button>
     </div>
-  </div>
-
-  <!-- Buttons -->
-  <div class="mt-6 flex space-x-3">
-    <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">Get Directions</button>
-    <button class="px-4 py-2 bg-gray-100 text-gray-800 text-sm rounded hover:bg-gray-200 transition">Visit Website</button>
-  </div>
-
-  <!-- Optional: Tags or Categories -->
-  <div class="mt-4 flex flex-wrap gap-2">
-    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">Historic</span>
-    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">Tourist Spot</span>
+    <div class="mt-4 flex flex-wrap gap-2">
+      <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">Historic</span>
+      <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">Tourist Spot</span>
+    </div>
   </div>
 </div>
+<div id="map" style="height:calc(100vh - 64px); width:100%; z-index: 1;">
+  {{point|json_script:"point_json"}}
+</div>
+
+{% comment %} </div> {% endcomment %}
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""></script>
@@ -247,8 +253,46 @@
                               clickedMarker.dragging.disable();
                             }
                           });
-                          };
-                        })
+                        }
+
+                        else{
+                          {% comment %} toggleLocationDescription(); {% endcomment %}
+                          console.log("the description is opened")
+                          fetch(`api/description-park/${park.id}/`, {
+                              method: 'GET',
+                              headers: {
+                                  'Content-Type': 'application/json',
+                                  'X-CSRFToken': getCsrfToken(),
+                          },   
+                              body: JSON.stringify({
+                                
+                              })
+                          })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    {% comment %} populateLocationDescription(data.data); {% endcomment %}
+                                    const parkData = data.data;
+      // Example: show park name and coordinates inside div#description
+      const descDiv = document.getElementById('description');
+      descDiv.innerHTML = `
+        <h3>${parkData.name}</h3>
+        <p>Latitude: ${parkData.latitude}</p>
+        <p>Longitude: ${parkData.longitude}</p>
+        <p>Description: ${parkData.description || 'No description available'}</p>
+      `;
+                                    toggleLocationDescription(true); // Show the description panel
+                                } else {
+                                    console.error('Error fetching park description:', data.error);
+                                    alert('Failed to load park information');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('Failed to load park information');
+                            });
+                        }
+                      })
                     });
                   }
         }catch (e) {
@@ -256,6 +300,85 @@
                 }
               };
               
+    function getLocationDescription(parkId) {
+    const parkElement = document.querySelector(`[data-id="${parkId}"]`);
+    if (parkElement) {
+        return {
+            id: parkElement.dataset.id,           // "1"
+            name: parkElement.dataset.name,       // "Ratna Park"
+            description: parkElement.dataset.description,  // "Beautiful central park..."
+            address: parkElement.dataset.address,     // "Ratna Park, Kathmandu 44600"
+            hours: parkElement.dataset.hours,       // "6:00 AM - 8:00 PM"
+            contact: parkElement.dataset.contact,   // "+977 1 4123456"
+            image_url: parkElement.dataset.image,   // "/media/parks/ratna_park.jpg"
+            website: parkElement.dataset.website,   // "https://ratnapark.gov.np"
+            tags: parkElement.dataset.tags.split(','), // ["Historic", "Family", "Garden"]
+            latitude: parseFloat(parkElement.dataset.latitude),
+            longitude: parseFloat(parkElement.dataset.longitude)
+        };
+    }
+    return null;
+}
+    function populateLocationDescription(parkData) {
+    const descripPanel = document.getElementById('LocDescrip');
+    
+    // Update image
+    const imgElement = descripPanel.querySelector('img');
+    if (parkData.image_url) {
+        imgElement.src = parkData.image_url;
+        imgElement.alt = parkData.name;
+        imgElement.parentElement.style.display = 'block';
+    } else {
+        imgElement.parentElement.style.display = 'none';
+    }
+    
+    // Update title
+    const titleElement = descripPanel.querySelector('h2');
+    titleElement.textContent = parkData.name;
+    
+    // Update description
+    const descriptionElement = descripPanel.querySelector('p');
+    descriptionElement.textContent = parkData.description;
+    
+    // Update address
+    const addressSpan = descripPanel.querySelector('.flex:nth-child(1) span:nth-child(2)');
+    addressSpan.textContent = parkData.address;
+    
+    // Update hours
+    const hoursSpan = descripPanel.querySelector('.flex:nth-child(2) span:nth-child(2)');
+    hoursSpan.textContent = parkData.hours;
+    
+    // Update contact
+    const contactSpan = descripPanel.querySelector('.flex:nth-child(3) span:nth-child(2)');
+    contactSpan.textContent = parkData.contact;
+    
+    // Update buttons
+    const directionsBtn = descripPanel.querySelector('button:first-child');
+    directionsBtn.onclick = () => {
+        const url = `https://www.google.com/maps/dir/?api=1&destination=${parkData.latitude},${parkData.longitude}`;
+        window.open(url, '_blank');
+    };
+    
+    const websiteBtn = descripPanel.querySelector('button:nth-child(2)');
+    if (parkData.website) {
+        websiteBtn.onclick = () => window.open(parkData.website, '_blank');
+        websiteBtn.style.display = 'inline-block';
+    } else {
+        websiteBtn.style.display = 'none';
+    }
+    
+    // Update tags
+    const tagsContainer = descripPanel.querySelector('.flex-wrap');
+    tagsContainer.innerHTML = '';
+    if (parkData.tags && parkData.tags.length > 0) {
+        parkData.tags.forEach(tag => {
+            const tagSpan = document.createElement('span');
+            tagSpan.className = 'bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full';
+            tagSpan.textContent = tag.trim();
+            tagsContainer.appendChild(tagSpan);
+        });
+    }
+}
           
 
     let addMarkerMode = false;
@@ -335,8 +458,6 @@
     }
     return null;
   };
-
- 
   </script>
 </body>
 </html>

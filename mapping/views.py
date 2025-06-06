@@ -43,8 +43,8 @@ def location(request):
 def add_park(request):
     if request.method == 'POST':
         try:
-            # data = request.data  # Use request.data since it's a DRF view
             data = json.loads(request.body)
+            # data = request.data
             latitude = data.get('latitude')
             longitude = data.get('longitude')
             # park = Marker.objects.create(latitude=lat, longitude=lng)
@@ -94,5 +94,26 @@ def edit_park(request, park_id):
         except Exception as e:
             print(f"An exception occurred: {e}")
             return Response({'error': 'Internal server error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+@api_view(['GET'])
+def showDescription(request,park_id):
+        try: 
+            park = Park.objects.get(id=park_id)
+            serialized = ParkSerializer(park)
+
+            print(park.id)
+            return JsonResponse({
+                'success': True,
+                'data': serialized.data
+            })
+        except Park.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'error': 'Park not found'
+            }, status=404)
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=500)
 def map(request):
     return render(request, 'mapping/map.html')

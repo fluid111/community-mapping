@@ -69,6 +69,17 @@ class Park(models.Model):
     def __str__(self):
         return self.name
 
+class ParkDescription(models.Model):
+    name = models.OneToOneField(Park, on_delete= models.CASCADE , primary_key=True)
+    description = models.TextField()
+    address = models.CharField(max_length=255, blank=True, help_text="Full address of the park")
+    phone = models.CharField(max_length=20, blank=True)
+    email = models.EmailField(blank=True)
+    image = models.ImageField(upload_to='park_images/', blank=True, null=True)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Description for {self.name}"
 
 
 class Submission(models.Model):
