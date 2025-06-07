@@ -26,7 +26,6 @@ def park_locations(request):
 
 
 def location(request):
-    # parks = Park.objects.values('id','latitude', 'longitude')[:100]
     parks = Park.objects.values('name', 'id','latitude', 'longitude')
     point = [
         park for park in parks
@@ -34,14 +33,13 @@ def location(request):
         and -90 <= park['latitude'] <= 90
         and -180 <= park['longitude'] <= 180
     ]
-    # print("location view - First two parks:", point[:2])
     context = {'point': point}
     return render(request, 'mapping/index.html', context)
 
 # @csrf_exempt  # Temporarily disable CSRF for simplicity (use proper CSRF handling in production)
 @api_view(['POST'])
 def add_park(request):
-    if request.method == 'POST':
+    # if request.method == 'POST':
         try:
             data = json.loads(request.body)
             # data = request.data
@@ -61,19 +59,19 @@ def add_park(request):
 
 @api_view(['DELETE'])
 def delete_park(request, park_id):
-    if request.method == 'DELETE':
+    # if request.method == 'DELETE':
         try:
             park = Park.objects.get(id=park_id)
             park.delete()
             return Response({'message': 'Park deleted successfully'}, status=status.HTTP_200_OK)
         except Park.DoesNotExist:
             return Response({'error': 'Park not found'}, status=status.HTTP_404_NOT_FOUND)
-    return JsonResponse({'error': 'Invalid method'}, status=400)
+    # return JsonResponse({'error': 'Invalid method'}, status=400)
 
 # @csrf_exempt
 @api_view(['PUT'])
 def edit_park(request, park_id):
-    if request.method == 'PUT':
+    # if request.method == 'PUT':
         try:
             park = Park.objects.get(id=park_id)
 
@@ -100,7 +98,7 @@ def showDescription(request,park_id):
             park = Park.objects.get(id=park_id)
             serialized = ParkSerializer(park)
 
-            print(park.id)
+            # print(park.id)
             return JsonResponse({
                 'success': True,
                 'data': serialized.data

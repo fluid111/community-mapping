@@ -8,7 +8,9 @@
   <link rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin="" />  
+    crossorigin="" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+ 
     <script>
     function toggleDropdown() {
       const menu = document.getElementById('dropdownMenu');
@@ -60,7 +62,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-                <ul id="dropdownMenu" class="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 hidden">
+                <ul id="dropdownMenu" class="absolute right-0 z-50 mt-2 w-32 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 hidden">
                   <li><a href="#" onclick="enableAddMarkerMode(event)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Add</a></li>
                   <li><a href="#" onclick="enableEditMarkerMode(event)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a></li>
                   <li><a href="#" onclick="enableDeleteMarkerMode(event)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Delete</a></li>
@@ -118,47 +120,50 @@
 {% comment %} Description section {% endcomment %}
 
 {% comment %} <div class="h-[calc(100vh-64px)]">  {% endcomment %}
-{% comment %} <div class="relative h-[calc(100vh-64px)]  w-full">  {% endcomment %}
-<div id="LocDescrip" class="absolute top-4 left-4 z-20 w-80 bg-red-500 border-4 border-yellow-400 rounded-lg shadow-lg p-6 max-h-[calc(100vh-120px)] overflow-y-auto hidden ">
-     <button onclick="toggleLocationDescription(false)" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl font-bold">&times;</button>
-    <div class="w-full h-48 mb-4 rounded-lg overflow-hidden bg-gray-200">
-      <img src="" alt="Location Image" class="object-cover" />
+<div class="relative w-full h-screen overflow-hidden"> 
+  <div id="map" class="absolute inset-0 w-full h-full z-0" >
+  {{ point|json_script:"point_json" }}
+</div>
+<div id="LocDescrip" class="absolute top-20z-20 bg-red-500 shadow-lg p-4 w-[40%] max-w-md overflow-auto">
+  <h2 class="text-2xl font-semibold mt-4 text-gray-800">Location Name</h2>
+  <p class="text-gray-600 text-sm leading-relaxed mb-4">
+    This is a short description of the location. It can include historical context, notable features, or any interesting facts about the place.
+  </p>
+  <div class="mt-4 space-y-2">
+    <div class="flex items-start">
+      <span class="text-gray-500 w-24">Address:</span>
+      <span class="text-gray-700">123 Main St, Kathmandu</span>
     </div>
-    <h2 class="text-2xl font-semibold mt-4 text-gray-800">Location Name</h2>
-    <p class="text-gray-600 text-sm leading-relaxed mb-4">
-      This is a short description of the location. It can include historical context, notable features, or any interesting facts about the place.
-    </p>
-    <div class="mt-4 space-y-2">
-      <div class="flex items-start">
-        <span class="text-gray-500 w-24">Address:</span>
-        <span class="text-gray-700">123 Main St, Kathmandu</span>
-      </div>
-      <div class="flex items-start">
-        <span class="text-gray-500 w-24">Hours:</span>
-        <span class="text-gray-700">9:00 AM - 5:00 PM</span>
-      </div>
-      <div class="flex items-start">
-        <span class="text-gray-500 w-24">Contact:</span>
-        <span class="text-gray-700">+977 1 2345678</span>
-      </div>
+    <div class="flex items-start">
+      <span class="text-gray-500 w-24">Hours:</span>
+      <span class="text-gray-700">9:00 AM - 5:00 PM</span>
     </div>
-    <div class="mt-6 flex space-x-3">
-      <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">
-        Get Directions
-      </button>
-      <button class="px-4 py-2 bg-gray-100 text-gray-800 text-sm rounded hover:bg-gray-200 transition">
-        Visit Website
-      </button>
-    </div>
-    <div class="mt-4 flex flex-wrap gap-2">
-      <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">Historic</span>
-      <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">Tourist Spot</span>
+    <div class="flex items-start">
+      <span class="text-gray-500 w-24">Contact:</span>
+      <span class="text-gray-700">+977 1 2345678</span>
     </div>
   </div>
+  <div class="mt-6 flex space-x-3">
+    <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition">
+      Get Directions
+    </button>
+    <button class="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition">
+      Visit Website
+    </button>
+  </div>
+  <div class="mt-4 flex flex-wrap gap-2">
+    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">Historic</span>
+    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">Tourist Spot</span>
+  </div>
 </div>
-<div id="map" style="height:calc(100vh - 64px); width:100%; z-index: 1;">
+
+<!-- Your map container -->
+
+</div>
+
+{% comment %} <div id="map" style="height:calc(100vh - 64px); width:100%; z-index: 1;">
   {{point|json_script:"point_json"}}
-</div>
+</div> {% endcomment %}
 
 {% comment %} </div> {% endcomment %}
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -254,132 +259,13 @@
                             }
                           });
                         }
-
-                        else{
-                          {% comment %} toggleLocationDescription(); {% endcomment %}
-                          console.log("the description is opened")
-                          fetch(`api/description-park/${park.id}/`, {
-                              method: 'GET',
-                              headers: {
-                                  'Content-Type': 'application/json',
-                                  'X-CSRFToken': getCsrfToken(),
-                          },   
-                              body: JSON.stringify({
-                                
-                              })
-                          })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    {% comment %} populateLocationDescription(data.data); {% endcomment %}
-                                    const parkData = data.data;
-      // Example: show park name and coordinates inside div#description
-      const descDiv = document.getElementById('description');
-      descDiv.innerHTML = `
-        <h3>${parkData.name}</h3>
-        <p>Latitude: ${parkData.latitude}</p>
-        <p>Longitude: ${parkData.longitude}</p>
-        <p>Description: ${parkData.description || 'No description available'}</p>
-      `;
-                                    toggleLocationDescription(true); // Show the description panel
-                                } else {
-                                    console.error('Error fetching park description:', data.error);
-                                    alert('Failed to load park information');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('Failed to load park information');
-                            });
-                        }
                       })
                     });
                   }
         }catch (e) {
                     console.error("Error parsing point_json:", e);
                 }
-              };
-              
-    function getLocationDescription(parkId) {
-    const parkElement = document.querySelector(`[data-id="${parkId}"]`);
-    if (parkElement) {
-        return {
-            id: parkElement.dataset.id,           // "1"
-            name: parkElement.dataset.name,       // "Ratna Park"
-            description: parkElement.dataset.description,  // "Beautiful central park..."
-            address: parkElement.dataset.address,     // "Ratna Park, Kathmandu 44600"
-            hours: parkElement.dataset.hours,       // "6:00 AM - 8:00 PM"
-            contact: parkElement.dataset.contact,   // "+977 1 4123456"
-            image_url: parkElement.dataset.image,   // "/media/parks/ratna_park.jpg"
-            website: parkElement.dataset.website,   // "https://ratnapark.gov.np"
-            tags: parkElement.dataset.tags.split(','), // ["Historic", "Family", "Garden"]
-            latitude: parseFloat(parkElement.dataset.latitude),
-            longitude: parseFloat(parkElement.dataset.longitude)
-        };
-    }
-    return null;
-}
-    function populateLocationDescription(parkData) {
-    const descripPanel = document.getElementById('LocDescrip');
-    
-    // Update image
-    const imgElement = descripPanel.querySelector('img');
-    if (parkData.image_url) {
-        imgElement.src = parkData.image_url;
-        imgElement.alt = parkData.name;
-        imgElement.parentElement.style.display = 'block';
-    } else {
-        imgElement.parentElement.style.display = 'none';
-    }
-    
-    // Update title
-    const titleElement = descripPanel.querySelector('h2');
-    titleElement.textContent = parkData.name;
-    
-    // Update description
-    const descriptionElement = descripPanel.querySelector('p');
-    descriptionElement.textContent = parkData.description;
-    
-    // Update address
-    const addressSpan = descripPanel.querySelector('.flex:nth-child(1) span:nth-child(2)');
-    addressSpan.textContent = parkData.address;
-    
-    // Update hours
-    const hoursSpan = descripPanel.querySelector('.flex:nth-child(2) span:nth-child(2)');
-    hoursSpan.textContent = parkData.hours;
-    
-    // Update contact
-    const contactSpan = descripPanel.querySelector('.flex:nth-child(3) span:nth-child(2)');
-    contactSpan.textContent = parkData.contact;
-    
-    // Update buttons
-    const directionsBtn = descripPanel.querySelector('button:first-child');
-    directionsBtn.onclick = () => {
-        const url = `https://www.google.com/maps/dir/?api=1&destination=${parkData.latitude},${parkData.longitude}`;
-        window.open(url, '_blank');
-    };
-    
-    const websiteBtn = descripPanel.querySelector('button:nth-child(2)');
-    if (parkData.website) {
-        websiteBtn.onclick = () => window.open(parkData.website, '_blank');
-        websiteBtn.style.display = 'inline-block';
-    } else {
-        websiteBtn.style.display = 'none';
-    }
-    
-    // Update tags
-    const tagsContainer = descripPanel.querySelector('.flex-wrap');
-    tagsContainer.innerHTML = '';
-    if (parkData.tags && parkData.tags.length > 0) {
-        parkData.tags.forEach(tag => {
-            const tagSpan = document.createElement('span');
-            tagSpan.className = 'bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full';
-            tagSpan.textContent = tag.trim();
-            tagsContainer.appendChild(tagSpan);
-        });
-    }
-}
-          
+              };          
 
     let addMarkerMode = false;
     let deleteMarkerMode = false;
